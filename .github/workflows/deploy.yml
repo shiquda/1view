@@ -17,7 +17,9 @@ jobs:
         run: |
           npm install -g pnpm
           pnpm install
-          pnpm run build
+          VITE_BASE_PATH=/1view/ pnpm run build
+        env:
+          VITE_BASE_PATH: /1view/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
