@@ -7,7 +7,6 @@ import {
   AppstoreOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { DashboardConfig, ViewerData } from '../types';
 import SettingsDialog from './SettingsDialog';
 
 const { Header } = Layout;

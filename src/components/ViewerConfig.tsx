@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons';
 import { ViewerConfig } from '../types';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 interface ViewerConfigProps {

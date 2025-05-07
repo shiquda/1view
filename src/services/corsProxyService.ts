@@ -84,7 +84,3 @@ export const fetchWithCorsProxy = async (url: string): Promise<Response> => {
   // 所有代理都失败了
   throw lastError || new Error('所有CORS代理都失败');
 };
-
-interface ApiResponse {
-  [key: string]: unknown;
-}

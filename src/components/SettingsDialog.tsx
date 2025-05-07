@@ -34,7 +34,7 @@ import {
 } from '../services/settingsService';
 import { exportConfig, importConfig } from '../services/storageService';
 
-const { Title, Text, Paragraph } = Typography;
+const { Text } = Typography;
 const { Option } = Select;
 
 interface SettingsDialogProps {

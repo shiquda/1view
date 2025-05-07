@@ -1,4 +1,4 @@
-import { Template, DashboardConfig, ViewerConfig } from '../types';
+import { Template, ViewerConfig } from '../types';
 import { loadDashboardConfig, saveDashboardConfig } from './storageService';
 import predefinedTemplatesJson from '../templates/templates.json';
 
