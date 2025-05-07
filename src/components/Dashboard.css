@@ -1,0 +1,66 @@
+/* 拖动把手样式 */
+.card-drag-handle {
+  cursor: move;
+}
+
+/* 防止卡片上的按钮区域触发拖拽 */
+.no-drag {
+  touch-action: none;
+}
+
+/* 操作按钮样式 */
+.card-buttons {
+  touch-action: none;
+  cursor: default;
+}
+
+/* 防止卡片上的按钮触发拖拽 */
+.card-buttons button {
+  pointer-events: auto;
+}
+
+/* 为卡片添加拖拽时的视觉反馈 */
+.react-grid-item.react-grid-placeholder {
+  background: rgba(0, 136, 204, 0.2) !important;
+  border: 2px dashed #0088cc !important;
+  border-radius: 4px;
+  transition: all 200ms ease;
+}
+
+/* 拖拽和调整大小时的样式 */
+.react-grid-item.react-draggable-dragging,
+.react-grid-item.react-resizable-resizing {
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 配置模式下的卡片样式 */
+.edit-mode .react-grid-item {
+  transition: all 0.3s ease;
+  border: 1px dashed transparent;
+}
+
+.edit-mode .react-grid-item:hover {
+  border-color: #1890ff;
+}
+
+/* 编辑模式下禁用文本选择 */
+.edit-mode .react-grid-item * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 增强调整大小手柄的可见性 */
+.edit-mode .react-resizable-handle {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22%3E%3Cpath fill=%22%231890ff%22 d=%22M22 22H2V2h20v20zM6 18h12v-2H6v2zm0-4h12v-2H6v2zm0-4h12V8H6v2zm0-4h12V4H6v2z%22/%3E%3C/svg%3E');
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.edit-mode .react-grid-item:hover .react-resizable-handle {
+  opacity: 1;
+}

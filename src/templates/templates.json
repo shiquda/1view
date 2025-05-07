@@ -1,0 +1,144 @@
+[
+  {
+    "id": "github-stars",
+    "name": "GitHub 用户星星数",
+    "description": "显示指定GitHub用户的获得的总星星数",
+    "category": "平台数据",
+    "config": {
+      "type": "text",
+      "name": "GitHub Stars - <$1>",
+      "dataUrl": "https://api.github-star-counter.workers.dev/user/<$1>",
+      "jsonPath": "$.stars",
+      "displayFormat": "{value} ⭐",
+      "styleConfig": {
+        "backgroundColor": "#000000",
+        "textColor": "#ffffff",
+        "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "GitHub 用户名",
+        "key": "$1",
+        "description": "请输入GitHub用户名",
+        "defaultValue": "microsoft"
+      }
+    ]
+  },
+  {
+    "id": "weather-current",
+    "name": "当前天气",
+    "description": "显示指定城市的当前天气状况",
+    "category": "生活",
+    "config": {
+      "type": "text",
+      "name": "<$1>天气",
+      "dataUrl": "https://wttr.in/<$1>?format=j1",
+      "jsonPath": "$.current_condition[0].temp_C",
+      "displayFormat": "{value}°C",
+      "styleConfig": {
+        "backgroundColor": "#e6f7ff",
+        "textColor": "#096dd9",
+        "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "城市名称",
+        "key": "$1",
+        "description": "请输入城市名称（英文）",
+        "defaultValue": "Beijing"
+      }
+    ]
+  },
+  {
+    "id": "stock-price",
+    "name": "股票价格",
+    "description": "显示指定股票代码的最新价格",
+    "category": "金融",
+    "config": {
+      "type": "text",
+      "name": "<$1>股价",
+      "dataUrl": "https://query1.finance.yahoo.com/v8/finance/chart/<$1>?interval=1d",
+      "jsonPath": "$.chart.result[0].meta.regularMarketPrice",
+      "displayFormat": "${value}",
+      "styleConfig": {
+        "backgroundColor": "#f6ffed",
+        "textColor": "#52c41a",
+        "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "股票代码",
+        "key": "$1",
+        "description": "请输入股票代码（例如：AAPL）",
+        "defaultValue": "AAPL"
+      }
+    ]
+  },
+  {
+    "id": "crypto-price",
+    "name": "加密货币价格",
+    "description": "显示指定加密货币的最新价格",
+    "category": "金融",
+    "config": {
+      "type": "text",
+      "name": "<$1>",
+      "dataUrl": "https://okx.com/api/v5/market/ticker?instId=<$1>",
+      "jsonPath": "$.data[0].last",
+      "displayFormat": "${value}",
+      "styleConfig": {
+        "backgroundColor": "#fff0f6",
+        "textColor": "#eb2f96",
+        "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "加密货币代码",
+        "key": "$1",
+        "description": "请输入币对（例如：BTC-USDT）",
+        "defaultValue": "BTC-USDT"
+      }
+    ]
+  },
+  {
+    "id": "hitokoto",
+    "name": "一言",
+    "description": "随机显示一句富有哲理的句子",
+    "category": "娱乐",
+    "config": {
+      "type": "text",
+      "name": "一言",
+      "dataUrl": "https://international.v1.hitokoto.cn/",
+      "jsonPath": "$.hitokoto",
+      "displayFormat": "{value}",
+      "styleConfig": {
+        "backgroundColor": "#f9f0ff",
+        "textColor": "#722ed1",
+        "fontSize": "1.5rem"
+      }
+    },
+    "variables": []
+  },
+  {
+    "id": "daily-joke",
+    "name": "每日笑话",
+    "description": "随机显示一则英文笑话",
+    "category": "娱乐",
+    "config": {
+      "type": "text",
+      "name": "每日笑话",
+      "dataUrl": "https://official-joke-api.appspot.com/random_joke",
+      "jsonPath": "$.setup",
+      "displayFormat": "😄 {value}",
+      "styleConfig": {
+        "backgroundColor": "#fcffe6",
+        "textColor": "#7cb305",
+        "fontSize": "1.5rem"
+      }
+    },
+    "variables": []
+  }
+]

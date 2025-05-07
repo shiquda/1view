@@ -1,0 +1,116 @@
+@import 'tailwindcss/preflight';
+@tailwind utilities;
+
+:root {
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-primary-hover: #2563eb; /* blue-600 */
+  --color-success: #10b981; /* green-500 */
+  --color-success-hover: #059669; /* green-600 */
+  --color-background: #f9fafb; /* gray-50 */
+  --color-card-background: #ffffff; /* white */
+  --color-text-default: #374151; /* gray-700 */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.viewer-edit-mode {
+  position: relative;
+  border: 2px dashed #cbd5e0;
+  border-radius: 0.5rem;
+  cursor: move;
+  transition: all 0.2s ease;
+}
+
+.viewer-edit-mode:active {
+  cursor: grabbing;
+  transform: scale(0.99);
+  opacity: 0.9;
+}
+
+.viewer-edit-mode:hover {
+  border-color: #718096;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 动画延迟效果 */
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* 卡片悬停效果 */
+.viewer-card {
+  transition: all 0.3s ease;
+}
+
+.viewer-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Font Awesome 扩展动画 */
+.fa-beat-fast {
+  animation: fa-beat 0.7s infinite;
+}
+
+.fa-fade-in {
+  animation: fa-fade 2s infinite;
+}
+
+@keyframes fa-beat {
+  0%,
+  90% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes fa-fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* 按钮悬停动画 */
+.btn-icon-hover {
+  transition: all 0.2s ease;
+}
+
+.btn-icon-hover:hover i {
+  transform: scale(1.2);
+}
+
+/* 输入框图标动画 */
+.input-icon-animated input:focus + .input-icon i {
+  color: #3b82f6; /* blue-500 */
+  transform: scale(1.1);
+}
+
+.input-icon-animated .input-icon i {
+  transition: all 0.2s ease;
+}
+
+/* 夜间模式支持 */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-support {
+    background-color: #1f2937; /* gray-800 */
+    color: #f3f4f6; /* gray-100 */
+  }
+}
