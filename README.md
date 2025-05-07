@@ -55,14 +55,6 @@ pnpm dev
 pnpm build
 ```
 
-## 自定义显示格式
-
-在配置卡片时，可以使用`{value}`作为数据值的占位符，例如：
-
-- 比特币价格：`BTC: {value} USD`
-- 用户名：`欢迎, {value}!`
-- 温度：`当前温度: {value}°C`
-
 ## 贡献指南
 
 我们非常欢迎社区贡献，特别是在以下方面：
@@ -73,6 +65,17 @@ pnpm build
 
 请查看 [TEMPLATE_GUIDE.md](./TEMPLATE_GUIDE.md) 了解如何创建和贡献模板。
 
+## TO DO
+
+- [ ] 添加更多模板
+- [ ] 支持更多信息获取方式（e.g. POST请求、HTML解析、RSS等）
+- [ ] i18n
+- [ ] 添加图示和badges
+- [ ] 添加多页面支持
+- [ ] 添加自部署Cloudflare Workers支持，以及安全防护
+- [ ] 完善和测试JSONPath语法解析
+- [ ] 添加自定义主题（主题色、字体、圆角等）
+
 ## 许可证
 
-MIT
+GPL-3.0 license
