@@ -205,6 +205,7 @@ const Dashboard: React.FC = () => {
       <div style={{ position: 'fixed', right: 24, bottom: 24 }}>
         <FloatButton.Group trigger="hover" icon={<PlusOutlined />} type="primary">
           <FloatButton
+            type="primary"
             icon={<PlusOutlined />}
             tooltip={{
               title: '从零创建',
@@ -217,6 +218,7 @@ const Dashboard: React.FC = () => {
             }}
           />
           <FloatButton
+            type="primary"
             icon={<AppstoreOutlined />}
             tooltip={{
               title: '从模板创建',

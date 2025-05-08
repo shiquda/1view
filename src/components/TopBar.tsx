@@ -39,16 +39,7 @@ const TopBar: React.FC<TopBarProps> = ({ appTitle, isConfiguring, toggleConfigMo
 
   return (
     <>
-      <Header
-        style={{
-          background: 'linear-gradient(90deg, #1677ff 0%, #4096ff 100%)',
-          padding: '0 24px',
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <Header>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <AppstoreOutlined style={{ fontSize: 24, marginRight: 12, color: '#fff' }} />
           <Title level={4} style={{ color: '#fff', margin: 0 }}>
@@ -59,7 +50,7 @@ const TopBar: React.FC<TopBarProps> = ({ appTitle, isConfiguring, toggleConfigMo
         <Space size="middle">
           {/* 设置按钮 */}
           <Button
-            type="default"
+            className="topbar-button"
             icon={<SettingOutlined />}
             onClick={() => setSettingsVisible(true)}
           >
@@ -68,20 +59,18 @@ const TopBar: React.FC<TopBarProps> = ({ appTitle, isConfiguring, toggleConfigMo
 
           {/* 刷新数据按钮 */}
           <Button
-            type="default"
+            className="topbar-button"
             icon={<SyncOutlined spin={refreshing} />}
             onClick={handleRefreshAll}
-            loading={false}
           >
             刷新
           </Button>
 
           {/* 编辑布局按钮 */}
           <Button
-            type="primary"
+            className={isConfiguring ? 'edit-button-active' : 'topbar-button'}
             icon={isConfiguring ? <CheckOutlined /> : <EditOutlined />}
             onClick={toggleConfigMode}
-            danger={isConfiguring}
           >
             {isConfiguring ? '完成' : '编辑'}
           </Button>

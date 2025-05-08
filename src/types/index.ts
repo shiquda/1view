@@ -52,6 +52,18 @@ export interface ViewerData {
   rawData?: Record<string, unknown>; // 添加原始数据字段，用于存储API返回的完整JSON数据
 }
 
+// 主题设置接口
+export interface ThemeSettings {
+  // 颜色设置
+  primaryColor: string;
+
+  // 字体设置
+  fontFamily: string;
+
+  // 卡片圆角设置
+  borderRadius: string;
+}
+
 // 全局设置配置
 export interface GlobalSettings {
   corsProxy: {
@@ -62,6 +74,8 @@ export interface GlobalSettings {
     // 是否启用代理
     enabled: boolean;
   };
+  // 添加主题设置
+  theme: ThemeSettings;
 }
 
 // 预定义的 CORS 代理服务模板

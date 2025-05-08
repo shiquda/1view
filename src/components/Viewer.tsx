@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { Card, Typography, Button, Spin, Result, Alert, Tooltip, Space } from 'antd';
 import {
-  Card,
-  Typography,
-  Button,
-  Spin,
-  Result,
-  Alert,
-  Tooltip,
-  Modal,
-  Space,
-  Divider,
-} from 'antd';
-import { SyncOutlined, InfoCircleOutlined, WarningOutlined, CodeOutlined } from '@ant-design/icons';
+  SyncOutlined,
+  InfoCircleOutlined,
+  WarningOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 import { ViewerConfig, ViewerData } from '../types';
 import { fetchData } from '../services/dataService';
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Title } = Typography;
 
 // 默认样式配置
 const DEFAULT_STYLE_CONFIG = {
@@ -42,7 +36,7 @@ const Viewer: React.FC<ViewerProps> = ({
   const [isRefreshing, setIsRefreshing] = useState(false); // 新增状态，表示是否正在刷新
   const [error, setError] = useState<string | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
-  const [showRawData, setShowRawData] = useState(false); // 控制原始数据弹窗显示
+  const [showSuccess, setShowSuccess] = useState(false); // 新增状态，表示是否显示成功图标
 
   // 验证配置是否完整
   useEffect(() => {
@@ -169,6 +163,13 @@ const Viewer: React.FC<ViewerProps> = ({
       if (onDataUpdate) {
         onDataUpdate(newData);
       }
+
+      // 显示成功图标
+      setShowSuccess(true);
+      // 3秒后隐藏成功图标
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : '获取数据失败');
       console.error('刷新数据失败:', err);
@@ -200,18 +201,44 @@ const Viewer: React.FC<ViewerProps> = ({
       return;
     }
 
+    // 清除旧的定时器
+    let intervalId: number | null = null;
+
+    // 创建一个刷新函数，带有防抖机制
+    const debouncedRefresh = () => {
+      // 如果已经在刷新中，不要重复刷新
+      if (isRefreshing || loading) {
+        return;
+      }
+
+      refreshData();
+    };
+
     // 如果没有初始数据，立即加载
     if (!initialData) {
-      refreshData();
+      debouncedRefresh();
     }
 
-    // 设置定时刷新
-    const intervalId = setInterval(refreshData, refreshInterval);
+    // 只有当refreshInterval大于0时才设置定时刷新
+    if (refreshInterval > 0) {
+      intervalId = window.setInterval(debouncedRefresh, refreshInterval);
+    }
 
     return () => {
-      clearInterval(intervalId);
+      // 清除定时器
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
     };
-  }, [config.id, config.dataUrl, config.jsonPath, refreshInterval, configError, initialData]);
+  }, [config.id, refreshInterval, configError, initialData]);
+
+  // 在依赖项变更时手动触发刷新，但不影响定时器
+  useEffect(() => {
+    // 关键数据源发生变更且不存在错误时，触发一次刷新
+    if (!configError && !isRefreshing && !loading) {
+      refreshData();
+    }
+  }, [config.dataUrl, config.jsonPath]);
 
   // 安全地获取样式配置，如果不存在则使用默认值
   const styleConfig = config.styleConfig || DEFAULT_STYLE_CONFIG;
@@ -256,162 +283,133 @@ const Viewer: React.FC<ViewerProps> = ({
     );
   }
 
-  // 渲染原始数据弹窗
-  const renderRawDataModal = () => {
-    if (!data || !data.rawData) return null;
-
-    return (
-      <Modal
-        title="原始数据"
-        open={showRawData}
-        onCancel={() => setShowRawData(false)}
-        footer={[
-          <Button key="close" onClick={() => setShowRawData(false)}>
-            关闭
-          </Button>,
-        ]}
-        width={800}
-        bodyStyle={{ maxHeight: '70vh', overflow: 'auto' }}
-      >
-        <Paragraph>
-          <Text type="secondary">数据源URL: </Text>
-          <Text code>{config.dataUrl}</Text>
-        </Paragraph>
-        <Paragraph>
-          <Text type="secondary">JSON路径: </Text>
-          <Text code>{config.jsonPath}</Text>
-        </Paragraph>
-        <Paragraph>
-          <Text type="secondary">最后更新时间: </Text>
-          <Text>{new Date(data.lastUpdated).toLocaleString()}</Text>
-        </Paragraph>
-        <Divider />
-        <pre
-          style={{
-            backgroundColor: '#f5f5f5',
-            padding: '16px',
-            borderRadius: '4px',
-            overflow: 'auto',
-            maxHeight: '500px',
-          }}
-        >
-          {JSON.stringify(data.rawData, null, 2)}
-        </pre>
-      </Modal>
-    );
-  };
-
   return (
-    <>
-      <Card
-        title={
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ color: textColor }}>{config.name}</Text>
-            <Space>
-              {data && data.rawData && (
-                <Tooltip title="查看原始数据" placement="left">
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<CodeOutlined style={{ fontSize: '16px' }} />}
-                    onClick={() => setShowRawData(true)}
-                    style={{
-                      color: textColor,
-                      opacity: 0.8,
-                      transition: 'all 0.3s',
-                    }}
-                  />
-                </Tooltip>
-              )}
-              <Tooltip title="刷新数据" placement="left">
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<SyncOutlined spin={isRefreshing} style={{ fontSize: '16px' }} />}
-                  onClick={refreshData}
-                  disabled={isRefreshing}
-                  style={{
-                    color: textColor,
-                    opacity: isRefreshing ? 0.7 : 1,
-                    transition: 'all 0.3s',
-                  }}
-                />
+    <Card
+      title={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ color: textColor }}>{config.name}</Text>
+          <Space>
+            <Tooltip title="刷新数据" placement="left">
+              <Button
+                type="text"
+                size="small"
+                icon={
+                  showSuccess ? (
+                    <CheckOutlined style={{ fontSize: '16px', color: '#52c41a' }} />
+                  ) : (
+                    <SyncOutlined spin={isRefreshing} style={{ fontSize: '16px' }} />
+                  )
+                }
+                onClick={refreshData}
+                disabled={isRefreshing}
+                style={{
+                  color: showSuccess ? '#52c41a' : textColor,
+                  opacity: isRefreshing ? 0.7 : 1,
+                  transition: 'all 0.3s',
+                }}
+              />
+            </Tooltip>
+          </Space>
+        </div>
+      }
+      style={{
+        height: '100%',
+        backgroundColor: backgroundColor,
+        color: textColor,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      bodyStyle={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        overflow: 'hidden',
+      }}
+    >
+      {loading ? (
+        <Spin tip="加载中" />
+      ) : error ? (
+        <div style={{ width: '100%' }}>
+          <Result
+            status="error"
+            title="加载失败"
+            subTitle={
+              <Tooltip title={error} placement="left">
+                <span style={{ cursor: 'help' }}>
+                  {error.length > 50 ? `${error.substring(0, 50)}...` : error}
+                </span>
               </Tooltip>
-            </Space>
-          </div>
-        }
-        style={{
-          height: '100%',
-          backgroundColor: backgroundColor,
-          color: textColor,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-        bodyStyle={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '16px',
-        }}
-      >
-        {loading ? (
-          <Spin tip="加载中" />
-        ) : error ? (
-          <div style={{ width: '100%' }}>
-            <Result
-              status="error"
-              title="加载失败"
-              subTitle={
-                <Tooltip title={error} placement="left">
-                  <span style={{ cursor: 'help' }}>
-                    {error.length > 50 ? `${error.substring(0, 50)}...` : error}
-                  </span>
-                </Tooltip>
-              }
-              style={{ padding: 0 }}
-            />
-            <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
-              <Tooltip title="CORS 错误可能是由浏览器安全限制导致的" placement="left">
-                {error.includes('CORS') && (
-                  <Alert
-                    type="warning"
-                    showIcon
-                    message="跨域访问受限"
-                    description={
-                      <div>
-                        <div>浏览器阻止了跨域请求。</div>
-                        <div style={{ marginTop: 8 }}>
-                          <Button
-                            size="small"
-                            type="link"
-                            icon={<InfoCircleOutlined />}
-                            onClick={() =>
-                              window.open(
-                                'https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS',
-                                '_blank'
-                              )
-                            }
-                          >
-                            了解更多
-                          </Button>
-                        </div>
+            }
+            style={{ padding: 0 }}
+          />
+          <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
+            <Tooltip title="CORS 错误可能是由浏览器安全限制导致的" placement="left">
+              {error.includes('CORS') && (
+                <Alert
+                  type="warning"
+                  showIcon
+                  message="跨域访问受限"
+                  description={
+                    <div>
+                      <div>浏览器阻止了跨域请求。</div>
+                      <div style={{ marginTop: 8 }}>
+                        <Button
+                          size="small"
+                          type="link"
+                          icon={<InfoCircleOutlined />}
+                          onClick={() =>
+                            window.open(
+                              'https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS',
+                              '_blank'
+                            )
+                          }
+                        >
+                          了解更多
+                        </Button>
                       </div>
-                    }
-                    style={{ width: '100%' }}
-                  />
-                )}
-              </Tooltip>
-            </div>
+                    </div>
+                  }
+                  style={{ width: '100%' }}
+                />
+              )}
+            </Tooltip>
           </div>
-        ) : (
-          <Title level={3} style={{ fontSize, color: textColor, margin: 0 }}>
-            {formatDisplayValue(data)}
-          </Title>
-        )}
-      </Card>
-      {renderRawDataModal()}
-    </>
+        </div>
+      ) : (
+        <Tooltip title={formatDisplayValue(data)}>
+          <div
+            style={{
+              width: '100%',
+              maxHeight: '100%',
+              overflow: 'hidden',
+              textAlign: 'center',
+            }}
+          >
+            <Title
+              level={3}
+              style={{
+                fontSize,
+                color: textColor,
+                margin: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 3, // 最多显示3行
+                lineHeight: '1.4em',
+                maxHeight: '4.2em', // 3行的大致高度
+                wordBreak: 'break-word', // 允许单词内换行
+                whiteSpace: 'pre-wrap', // 保留空格和换行，但允许正常换行
+              }}
+            >
+              {formatDisplayValue(data)}
+            </Title>
+          </div>
+        </Tooltip>
+      )}
+    </Card>
   );
 };
 

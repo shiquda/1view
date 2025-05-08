@@ -42,19 +42,57 @@ export const fetchData = async (config: ViewerConfig): Promise<ViewerData> => {
     let data: unknown;
     const settings = loadGlobalSettings();
 
+    // 记录开始时间，用于性能监控
+    const startTime = Date.now();
+
     // 如果 URL 是外部 API，则使用 CORS 代理
     if (config.dataUrl.startsWith('http') && !config.dataUrl.includes('localhost')) {
       // 检查代理是否启用
       if (settings.corsProxy.enabled) {
-        response = await fetchWithCorsProxy(config.dataUrl);
-        data = await response.json();
+        try {
+          response = await fetchWithCorsProxy(config.dataUrl);
+          data = await response.json();
+        } catch (proxyError) {
+          // 代理请求失败，记录详细错误
+          console.error(`代理请求失败 (${config.name}):`, proxyError);
+          throw new Error(
+            `代理请求失败: ${proxyError instanceof Error ? proxyError.message : String(proxyError)}`
+          );
+        }
       } else {
         // 代理禁用，直接请求
+        try {
+          response = await fetch(config.dataUrl, {
+            headers: {
+              Accept: 'application/json',
+            },
+            cache: 'no-cache',
+            // 设置超时
+            signal: AbortSignal.timeout(10000),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP错误! 状态: ${response.status}`);
+          }
+
+          data = await response.json();
+        } catch (fetchError) {
+          console.error(`直接请求失败 (${config.name}):`, fetchError);
+          throw new Error(
+            `请求失败: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`
+          );
+        }
+      }
+    } else {
+      // 本地 API 直接请求
+      try {
         response = await fetch(config.dataUrl, {
           headers: {
             Accept: 'application/json',
           },
           cache: 'no-cache',
+          // 设置超时
+          signal: AbortSignal.timeout(5000),
         });
 
         if (!response.ok) {
@@ -62,39 +100,45 @@ export const fetchData = async (config: ViewerConfig): Promise<ViewerData> => {
         }
 
         data = await response.json();
+      } catch (localError) {
+        console.error(`本地API请求失败 (${config.name}):`, localError);
+        throw new Error(
+          `本地请求失败: ${localError instanceof Error ? localError.message : String(localError)}`
+        );
       }
-    } else {
-      // 本地 API 直接请求
-      response = await fetch(config.dataUrl, {
-        headers: {
-          Accept: 'application/json',
-        },
-        cache: 'no-cache',
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP错误! 状态: ${response.status}`);
-      }
-
-      data = await response.json();
     }
 
-    // 提取多个值
-    const values = extractMultipleValuesByPath(data as Record<string, unknown>, config.jsonPath);
+    // 记录请求完成时间
+    const endTime = Date.now();
+    console.log(`数据请求完成 (${config.name}): ${endTime - startTime}ms`);
 
-    // 将提取的值格式化为字符串数组
-    const stringValues = values.map(value =>
-      typeof value === 'object' ? JSON.stringify(value) : String(value)
-    );
+    try {
+      // 提取多个值
+      const values = extractMultipleValuesByPath(data as Record<string, unknown>, config.jsonPath);
 
-    return {
-      id: config.id,
-      value: stringValues,
-      lastUpdated: Date.now(),
-      rawData: data as Record<string, unknown>, // 保存原始数据
-    };
+      // 将提取的值格式化为字符串数组
+      const stringValues = values.map(value =>
+        typeof value === 'object' ? JSON.stringify(value) : String(value)
+      );
+
+      return {
+        id: config.id,
+        value: stringValues,
+        lastUpdated: Date.now(),
+        rawData: data as Record<string, unknown>, // 保存原始数据
+      };
+    } catch (extractError) {
+      console.error(`数据提取失败 (${config.name}):`, extractError);
+      return {
+        id: config.id,
+        value: null,
+        lastUpdated: Date.now(),
+        error: `数据提取失败: ${extractError instanceof Error ? extractError.message : String(extractError)}`,
+        rawData: data as Record<string, unknown>,
+      };
+    }
   } catch (error) {
-    console.error('获取数据失败:', error);
+    console.error(`获取数据失败 (${config.name}):`, error);
     return {
       id: config.id,
       value: null,

@@ -2,30 +2,88 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #3b82f6; /* blue-500 */
-  --color-primary-hover: #2563eb; /* blue-600 */
-  --color-success: #10b981; /* green-500 */
-  --color-success-hover: #059669; /* green-600 */
-  --color-background: #f9fafb; /* gray-50 */
-  --color-card-background: #ffffff; /* white */
-  --color-text-default: #374151; /* gray-700 */
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
+  /* 主色调 */
+  --color-primary: #3b82f6; /* 主题色 - 蓝色500 */
+  --color-primary-hover: #2563eb; /* 主题悬停色 - 蓝色600（由JS自动生成） */
+
+  /* 字体 */
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* 圆角 */
+  --radius-card: 0.5rem; /* 卡片圆角 */
+
+  /* 背景色和文本色（固定值，不受主题影响） */
+  --color-background: #f9fafb; /* 灰色50 */
+  --color-card-background: #ffffff; /* 白色 */
+  --color-text-default: #374151; /* 灰色700 */
 }
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text-default);
+}
+
+/* 顶栏样式 */
+.ant-layout-header {
+  background: var(--color-primary) !important;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-primary-hover) 100%
+  ) !important;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 浮动按钮的样式（如右下角的添加按钮等） */
+.ant-float-btn-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.ant-float-btn-primary:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.ant-float-btn-primary .ant-float-btn-body {
+  background-color: var(--color-primary) !important;
+}
+
+/* 编辑按钮样式 - 编辑状态使用红色 */
+.edit-button-active {
+  background-color: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+}
+
+.edit-button-active:hover {
+  background-color: #ff7875 !important;
+  border-color: #ff7875 !important;
+}
+
+/* 卡片和组件样式 */
+.viewer-card,
+.ant-card {
+  border-radius: var(--radius-card);
+  background-color: var(--color-card-background);
+  transition: all 0.3s ease;
+}
+
+.viewer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .viewer-edit-mode {
   position: relative;
   border: 2px dashed #cbd5e0;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-card);
   cursor: move;
   transition: all 0.2s ease;
 }
@@ -41,6 +99,31 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* 按钮和交互元素 */
+.ant-btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+
+/* 顶栏上的普通按钮样式 */
+.topbar-button {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: transparent !important;
+  color: white !important;
+}
+
+.topbar-button:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: transparent !important;
+  color: white !important;
+}
+
 /* 动画延迟效果 */
 .animation-delay-200 {
   animation-delay: 0.2s;
@@ -48,15 +131,6 @@ body {
 
 .animation-delay-400 {
   animation-delay: 0.4s;
-}
-
-/* 卡片悬停效果 */
-.viewer-card {
-  transition: all 0.3s ease;
-}
-
-.viewer-card:hover {
-  transform: translateY(-2px);
 }
 
 /* Font Awesome 扩展动画 */
@@ -99,7 +173,7 @@ body {
 
 /* 输入框图标动画 */
 .input-icon-animated input:focus + .input-icon i {
-  color: #3b82f6; /* blue-500 */
+  color: var(--color-primary);
   transform: scale(1.1);
 }
 
@@ -113,4 +187,26 @@ body {
     background-color: #1f2937; /* gray-800 */
     color: #f3f4f6; /* gray-100 */
   }
+}
+
+/* 卡片编辑按钮的样式 */
+.card-buttons .ant-btn-text {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.card-buttons .ant-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
+}
+
+/* 卡片删除按钮悬停时的样式 */
+.card-buttons .ant-btn-text.ant-btn-dangerous:hover {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+/* Content区域样式 */
+.ant-layout-content {
+  padding: 24px;
+  background-color: var(--color-background) !important;
 }

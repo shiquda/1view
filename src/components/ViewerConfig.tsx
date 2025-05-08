@@ -25,7 +25,6 @@ import {
   FontSizeOutlined,
   EyeOutlined,
   ReloadOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
 import { ViewerConfig, ViewerData } from '../types';
 import { fetchData } from '../services/dataService';
@@ -49,7 +48,6 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [showRawDataModal, setShowRawDataModal] = useState(false);
   const [previewFormValues, setPreviewFormValues] = useState<Record<string, unknown> | null>(null);
 
   // 确保styleConfig存在
@@ -216,43 +214,6 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
     onSave(completeConfig);
   };
 
-  // 修改renderRawDataModal函数，使用预览时保存的数据URL
-  const renderRawDataModal = () => {
-    if (!previewData || !previewData.rawData) return null;
-
-    return (
-      <Modal
-        title="原始数据"
-        open={showRawDataModal}
-        onCancel={() => setShowRawDataModal(false)}
-        footer={[
-          <Button key="close" onClick={() => setShowRawDataModal(false)}>
-            关闭
-          </Button>,
-        ]}
-        width={800}
-        bodyStyle={{ maxHeight: '70vh', overflow: 'auto' }}
-      >
-        <Paragraph>
-          <Text type="secondary">数据源URL: </Text>
-          <Text code>{previewFormValues?.dataUrl || form.getFieldValue('dataUrl')}</Text>
-        </Paragraph>
-        <Divider />
-        <pre
-          style={{
-            backgroundColor: '#f5f5f5',
-            padding: '16px',
-            borderRadius: '4px',
-            overflow: 'auto',
-            maxHeight: '500px',
-          }}
-        >
-          {JSON.stringify(previewData.rawData, null, 2)}
-        </pre>
-      </Modal>
-    );
-  };
-
   // 添加重置预览状态的函数
   const resetPreviewState = () => {
     // 不清除 previewFormValues，以保持最后一次预览的表单值
@@ -260,7 +221,6 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
     setPreviewData(null);
     setPreviewError(null);
     setShowPreviewModal(false);
-    setShowRawDataModal(false);
   };
 
   // 修改关闭预览模态框的处理逻辑
@@ -306,34 +266,20 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
         ) : previewData && previewData.value ? (
           <div>
             <div style={{ marginBottom: 16 }}>
-              <Space>
-                {previewData.rawData && (
-                  <Button
-                    type="primary"
-                    ghost
-                    icon={<SearchOutlined />}
-                    onClick={() => {
-                      setShowRawDataModal(true);
-                    }}
-                  >
-                    查看原始数据
-                  </Button>
-                )}
-                <Button
-                  type="primary"
-                  ghost
-                  icon={<ReloadOutlined />}
-                  onClick={() => {
-                    // 在刷新预览时先保存当前表单值
-                    const currentValues = form.getFieldsValue(true);
-                    console.log('刷新预览前的表单值:', currentValues);
-                    handlePreview();
-                  }}
-                  loading={previewLoading}
-                >
-                  刷新预览
-                </Button>
-              </Space>
+              <Button
+                type="primary"
+                ghost
+                icon={<ReloadOutlined />}
+                onClick={() => {
+                  // 在刷新预览时先保存当前表单值
+                  const currentValues = form.getFieldsValue(true);
+                  console.log('刷新预览前的表单值:', currentValues);
+                  handlePreview();
+                }}
+                loading={previewLoading}
+              >
+                刷新预览
+              </Button>
             </div>
 
             <Paragraph>
@@ -552,7 +498,6 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
         </Form.Item>
       </Form>
       {renderPreviewModal()}
-      {showRawDataModal && renderRawDataModal()}
     </div>
   );
 };
