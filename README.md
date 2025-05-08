@@ -65,6 +65,8 @@ pnpm build
 
 请查看 [TEMPLATE_GUIDE.md](./TEMPLATE_GUIDE.md) 了解如何创建和贡献模板。
 
+如果需要部署自己的CORS代理服务，请查看 [DEPLOY_GUIDE.md](./DEPLOY_GUIDE.md) 了解如何使用Cloudflare Workers部署。
+
 ## TO DO
 
 - [ ] 添加更多模板
@@ -72,12 +74,12 @@ pnpm build
 - [ ] i18n
 - [ ] 添加图示和badges
 - [ ] 添加多页面支持
-- [ ] 添加自部署Cloudflare Workers支持，以及安全防护
-- [ ] 完善和测试JSONPath语法解析
+- [ ] 添加自部署Cloudflare Workers安全防护
+- [x] 完善和测试JSONPath语法解析
 - [ ] 添加自定义主题（主题色、字体、圆角等）
-- [ ] 允许从同一数据源中读取多个数据
+- [x] 允许从同一数据源中读取多个数据
 - [ ] 添加卡片的跳转URL选项（可选），双击卡片后跳转对应URL
-- [ ] 添加/编辑卡片允许用户预览请求字段结果
+- [x] 添加/编辑卡片允许用户预览请求字段结果
 
 ## 许可证
 
