@@ -148,21 +148,52 @@ const ViewerConfigForm: React.FC<ViewerConfigProps> = ({
       return displayFormat.replace('{value}', data.value[0]);
     }
 
-    // 如果是多个值，用逗号连接或格式化显示
+    // 如果是多个值
     if (displayFormat.includes('{value}')) {
       // 如果格式中只有{value}占位符，用所有值连接起来
       return displayFormat.replace('{value}', data.value.join(', '));
-    } else if (displayFormat.includes('{value1}') || displayFormat.includes('{value2}')) {
-      // 如果格式中包含{valueN}形式的占位符，占位符从1开始编号，逐个替换
-      let formatted = displayFormat;
-      data.value.forEach((val, index) => {
-        // 占位符从1开始，而不是0
-        formatted = formatted.replace(`{value${index + 1}}`, val);
-      });
-      return formatted;
     } else {
-      // 默认用逗号连接所有值
-      return data.value.join(', ');
+      // 检查是否包含任何形式的{valueN}占位符
+      const hasValuePlaceholders = /\{value\d+\}/.test(displayFormat);
+
+      if (hasValuePlaceholders) {
+        // 创建一个新的格式化字符串的副本
+        let formatted = displayFormat;
+
+        // 首先查找所有的 {valueN} 模式
+        const placeholderRegex = /\{value(\d+)\}/g;
+        let match;
+        let placeholders = [];
+
+        // 收集所有占位符并排序
+        while ((match = placeholderRegex.exec(displayFormat)) !== null) {
+          const index = parseInt(match[1]);
+          placeholders.push({
+            placeholder: match[0],
+            index: index,
+          });
+        }
+
+        // 按占位符索引排序，确保从小到大替换
+        placeholders.sort((a, b) => a.index - b.index);
+
+        // 逐个替换占位符
+        for (const { placeholder, index } of placeholders) {
+          // 检查索引是否在数据范围内
+          if (index > 0 && index <= data.value.length) {
+            // 注意索引从1开始，但数组索引从0开始
+            formatted = formatted.replace(placeholder, data.value[index - 1]);
+          } else {
+            // 超出范围的占位符替换为空字符串
+            formatted = formatted.replace(placeholder, '');
+          }
+        }
+
+        return formatted;
+      } else {
+        // 默认用逗号连接所有值
+        return data.value.join(', ');
+      }
     }
   };
 
