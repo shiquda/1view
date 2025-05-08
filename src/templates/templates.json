@@ -1,15 +1,15 @@
 [
   {
-    "id": "github-stars",
-    "name": "GitHub 用户星星数",
-    "description": "显示指定GitHub用户的获得的总星星数",
+    "id": "github-user-stats",
+    "name": "GitHub 用户统计",
+    "description": "显示指定GitHub用户的获得的总Stars数和Fork数",
     "category": "平台数据",
     "config": {
       "type": "text",
-      "name": "GitHub Stars - <$1>",
+      "name": "GitHub - <$1>",
       "dataUrl": "https://api.github-star-counter.workers.dev/user/<$1>",
-      "jsonPath": "$.stars",
-      "displayFormat": "{value} ⭐",
+      "jsonPath": "$.stars, $.forks",
+      "displayFormat": "{value1} ⭐\n{value2} 🍴",
       "styleConfig": {
         "backgroundColor": "#000000",
         "textColor": "#ffffff",
@@ -21,7 +21,39 @@
         "name": "GitHub 用户名",
         "key": "$1",
         "description": "请输入GitHub用户名",
-        "defaultValue": "microsoft"
+        "defaultValue": "octocat"
+      }
+    ]
+  },
+  {
+    "id": "github-repo-stats",
+    "name": "GitHub 仓库统计",
+    "description": "显示指定GitHub仓库的统计信息",
+    "category": "平台数据",
+    "config": {
+      "type": "text",
+      "name": "GitHub - <$1>/<$2>",
+      "dataUrl": "https://api.github.com/repos/<$1>/<$2>",
+      "jsonPath": "$.stargazers_count, $.forks_count, $.open_issues_count",
+      "displayFormat": "{value1} ⭐\n{value2} 🍴\n{value3} Issues ",
+      "styleConfig": {
+        "backgroundColor": "#000000",
+        "textColor": "#ffffff",
+        "fontSize": "1.5rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "GitHub 用户名",
+        "key": "$1",
+        "description": "请输入GitHub用户名",
+        "defaultValue": "octocat"
+      },
+      {
+        "name": "仓库名称",
+        "key": "$2",
+        "description": "请输入仓库名称",
+        "defaultValue": "Hello-World"
       }
     ]
   },
@@ -40,6 +72,32 @@
         "backgroundColor": "#e6f7ff",
         "textColor": "#096dd9",
         "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "城市名称",
+        "key": "$1",
+        "description": "请输入城市名称（英文）",
+        "defaultValue": "Beijing"
+      }
+    ]
+  },
+  {
+    "id": "weather-detailed",
+    "name": "详细天气信息",
+    "description": "同时显示指定城市的温度和湿度",
+    "category": "生活",
+    "config": {
+      "type": "text",
+      "name": "<$1> 天气详情",
+      "dataUrl": "https://wttr.in/<$1>?format=j1",
+      "jsonPath": "$.current_condition[0].temp_C, $.current_condition[0].humidity",
+      "displayFormat": "🌡️ {value1}°C\n💧 {value2}%",
+      "styleConfig": {
+        "backgroundColor": "#e6f7ff",
+        "textColor": "#096dd9",
+        "fontSize": "1.8rem"
       }
     },
     "variables": [
