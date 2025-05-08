@@ -58,6 +58,32 @@
     ]
   },
   {
+    "id": "bilibili-followers",
+    "name": "B站粉丝数",
+    "description": "显示B站UP主的粉丝数量",
+    "category": "平台数据",
+    "config": {
+      "type": "text",
+      "name": "B站粉丝 - <$1>",
+      "dataUrl": "https://api.bilibili.com/x/relation/stat?vmid=<$1>",
+      "jsonPath": "$.data.follower",
+      "displayFormat": "{value} 粉丝",
+      "styleConfig": {
+        "backgroundColor": "#00a1d6",
+        "textColor": "#ffffff",
+        "fontSize": "2rem"
+      }
+    },
+    "variables": [
+      {
+        "name": "B站用户ID",
+        "key": "$1",
+        "description": "请输入B站用户ID",
+        "defaultValue": "1"
+      }
+    ]
+  },
+  {
     "id": "weather-current",
     "name": "当前天气",
     "description": "显示指定城市的当前天气状况",
@@ -66,8 +92,8 @@
       "type": "text",
       "name": "<$1>天气",
       "dataUrl": "https://wttr.in/<$1>?format=j1",
-      "jsonPath": "$.current_condition[0].temp_C",
-      "displayFormat": "{value}°C",
+      "jsonPath": "$.current_condition[0].temp_C, $.current_condition[0].humidity, $.current_condition[0].lang_zh[0].value, $.weather[0].mintempC, $.weather[0].maxtempC",
+      "displayFormat": "今天气温{value4}~{value5}°C， {value3}，现在 🌡️ {value1}°C💧 {value2}%",
       "styleConfig": {
         "backgroundColor": "#e6f7ff",
         "textColor": "#096dd9",
