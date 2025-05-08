@@ -40,7 +40,17 @@ export const loadViewerDataCache = (): Record<string, ViewerData> => {
   if (!stored) return {};
 
   try {
-    return JSON.parse(stored) as Record<string, ViewerData>;
+    const data = JSON.parse(stored) as Record<string, ViewerData>;
+
+    // 兼容旧版数据格式：将string类型的value转换为string[]
+    Object.values(data).forEach(viewerData => {
+      if (viewerData.value !== null && !Array.isArray(viewerData.value)) {
+        // 将旧格式的字符串值转换为数组格式
+        viewerData.value = [viewerData.value as unknown as string];
+      }
+    });
+
+    return data;
   } catch (error) {
     console.error('解析数据缓存失败:', error);
     return {};

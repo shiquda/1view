@@ -205,7 +205,10 @@ const Dashboard: React.FC = () => {
         <FloatButton.Group trigger="hover" icon={<PlusOutlined />} type="primary">
           <FloatButton
             icon={<PlusOutlined />}
-            tooltip="从零创建"
+            tooltip={{
+              title: '从零创建',
+              placement: 'left',
+            }}
             onClick={() => {
               setEditingViewer(null);
               setShowAddForm(true);
@@ -214,7 +217,10 @@ const Dashboard: React.FC = () => {
           />
           <FloatButton
             icon={<AppstoreOutlined />}
-            tooltip="从模板创建"
+            tooltip={{
+              title: '从模板创建',
+              placement: 'left',
+            }}
             onClick={() => {
               setShowTemplateSelector(true);
               setShowAddForm(false);
@@ -299,7 +305,7 @@ const Dashboard: React.FC = () => {
                   {isConfiguring && (
                     <>
                       {/* 拖动指示器 */}
-                      <Tooltip title="拖动卡片">
+                      <Tooltip title="拖动卡片" placement="right">
                         <DragOutlined
                           style={{
                             position: 'absolute',
@@ -333,7 +339,7 @@ const Dashboard: React.FC = () => {
                         onTouchStart={e => e.stopPropagation()}
                         onClick={e => e.stopPropagation()}
                       >
-                        <Tooltip title="编辑">
+                        <Tooltip title="编辑" placement="left">
                           <Button
                             type="text"
                             size="small"
@@ -345,7 +351,7 @@ const Dashboard: React.FC = () => {
                             }}
                           />
                         </Tooltip>
-                        <Tooltip title="删除">
+                        <Tooltip title="删除" placement="left">
                           <Button
                             type="text"
                             size="small"

@@ -99,6 +99,20 @@ export const extractValueByPath = (data: Record<string, unknown>, path: string):
 };
 
 /**
+ * 从对象中提取多个值，支持多个JSONPath路径（以英文逗号分隔）
+ */
+export const extractMultipleValuesByPath = (
+  data: Record<string, unknown>,
+  pathsString: string
+): unknown[] => {
+  // 按英文逗号分割多个路径
+  const paths = pathsString.split(',').map(path => path.trim());
+
+  // 提取每个路径的值
+  return paths.map(path => extractValueByPath(data, path));
+};
+
+/**
  * 从数据源获取数据
  */
 export const fetchData = async (config: ViewerConfig): Promise<ViewerData> => {
@@ -144,15 +158,19 @@ export const fetchData = async (config: ViewerConfig): Promise<ViewerData> => {
       data = await response.json();
     }
 
-    const value = extractValueByPath(data as Record<string, unknown>, config.jsonPath);
+    // 提取多个值
+    const values = extractMultipleValuesByPath(data as Record<string, unknown>, config.jsonPath);
 
-    // 将提取的值格式化为字符串
-    const stringValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    // 将提取的值格式化为字符串数组
+    const stringValues = values.map(value =>
+      typeof value === 'object' ? JSON.stringify(value) : String(value)
+    );
 
     return {
       id: config.id,
-      value: stringValue,
+      value: stringValues,
       lastUpdated: Date.now(),
+      rawData: data as Record<string, unknown>, // 保存原始数据
     };
   } catch (error) {
     console.error('获取数据失败:', error);

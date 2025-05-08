@@ -46,9 +46,10 @@ export interface DashboardConfig {
 
 export interface ViewerData {
   id: string;
-  value: string | null;
+  value: string[] | null;
   lastUpdated: number; // Unix时间戳
   error?: string;
+  rawData?: Record<string, unknown>; // 添加原始数据字段，用于存储API返回的完整JSON数据
 }
 
 // 全局设置配置
