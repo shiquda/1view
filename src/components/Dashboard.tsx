@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
   AppstoreOutlined,
   DragOutlined,
+  GithubOutlined,
 } from '@ant-design/icons';
 import 'react-grid-layout/css/styles.css';
 import { DashboardConfig, LayoutItem, ViewerConfig, ViewerData } from '../types';
@@ -382,8 +383,32 @@ const Dashboard: React.FC = () => {
       </Content>
 
       {/* 页脚 */}
-      <Footer style={{ textAlign: 'center', background: '#fff' }}>
+      <Footer
+        style={{
+          background: '#fff',
+          height: '40px',
+          padding: '8px 24px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
         <Text type="secondary">1View Dashboard ©{new Date().getFullYear()}</Text>
+        <Button
+          type="link"
+          icon={<GithubOutlined />}
+          href="https://github.com/shiquda/1view"
+          target="_blank"
+          style={{
+            padding: '0px 8px',
+            height: '24px',
+            position: 'absolute',
+            right: '24px',
+          }}
+        >
+          GitHub
+        </Button>
       </Footer>
     </Layout>
   );
